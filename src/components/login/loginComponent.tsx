@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import useLogin from '../../hooks/useLogin';
 
@@ -37,16 +37,21 @@ const LoginInput = styled.input`
 const LoginButton = styled.button`
   width: 100%;
   height: 50px;
-  background: darkgray;
+  background: gray;
   border: none;
   outline: none;
   color: #fff;
   font-size: 16px;
   letter-spacing: -1.5px;
   cursor: pointer;
+  transition: all 1s;
+  &:disabled {
+    background: darkgray;
+  }
 `;
 
 const LoginComponent = () => {
+  const inputPasswordRef = useRef<HTMLInputElement | null>(null);
   const [loginId, setLoginId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const { login } = useLogin();
@@ -77,21 +82,16 @@ const LoginComponent = () => {
     }
   };
 
-  const loginOnKeyPress = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Enter') {
-      if (_.isEmpty(loginId) && _.isEmpty(password)) {
-        toast.warning('아이디 비밀번호를 확인 해주세요.', {
-          position: 'top-right',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        login({ loginId, password });
-      }
+  const loginOnKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    const targetName: string = e.target.name;
+    if (targetName === 'email') {
+      inputPasswordRef.current?.focus();
+      return;
+    }
+
+    if (targetName === 'password') {
+      loginOnClick();
     }
   };
   return (
@@ -101,18 +101,23 @@ const LoginComponent = () => {
         <LoginInput
           placeholder="아이디"
           type="email"
+          name="email"
           onChange={e => loginInputOnChange(e)}
+          onKeyUp={e => loginOnKeyPress(e)}
           value={loginId}
         />
         <LoginInput
           placeholder="비밀번호"
           type="password"
+          name="password"
           onChange={e => passwordInputOnChange(e)}
+          onKeyUp={e => loginOnKeyPress(e)}
           value={password}
+          ref={inputPasswordRef}
         />
         <LoginButton
           onClick={() => loginOnClick()}
-          onKeyPress={e => loginOnKeyPress(e)}
+          disabled={_.isEmpty(loginId) || _.isEmpty(password)}
         >
           로그인
         </LoginButton>
