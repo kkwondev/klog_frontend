@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import _ from 'lodash';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import useLogin from '../../hooks/useLogin';
 
 const LoginFormWrap = styled.div`
@@ -61,7 +62,16 @@ const LoginComponent = () => {
 
   const loginOnClick = () => {
     if (_.isEmpty(loginId) && _.isEmpty(password)) {
-      alert('아이디 비밀번호를 확인 해주세요.');
+      // alert('아이디 비밀번호를 확인 해주세요.');
+      toast.warning('아이디 비밀번호를 확인 해주세요.', {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } else {
       login({ loginId, password });
     }
@@ -70,7 +80,15 @@ const LoginComponent = () => {
   const loginOnKeyPress = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === 'Enter') {
       if (_.isEmpty(loginId) && _.isEmpty(password)) {
-        alert('아이디 비밀번호를 확인 해주세요.');
+        toast.warning('아이디 비밀번호를 확인 해주세요.', {
+          position: 'top-right',
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
         login({ loginId, password });
       }
