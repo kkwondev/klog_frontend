@@ -102,11 +102,13 @@ const LoginComponent = () => {
           placeholder="아이디"
           type="email"
           onChange={e => loginInputOnChange(e)}
+          value={loginId}
         />
         <LoginInput
           placeholder="비밀번호"
           type="password"
           onChange={e => passwordInputOnChange(e)}
+          value={password}
         />
         <LoginButton
           onClick={() => loginOnClick()}
